@@ -12,7 +12,8 @@ const DoctorSchema =  new mongoose.Schema({
     fees:String,
     qualification:String,
     title:String,
-    image:String
+    image:String,
+    specialization:String
 
 
 })

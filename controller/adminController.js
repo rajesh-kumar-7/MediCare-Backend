@@ -8,30 +8,30 @@ const admin = await User.findOne({email})
 if(!admin){
     res.status(400).json({message:"invalid credential"})
 }
-const isValidPass = bcrypt.compare(password,admin.password)
+const isValidPass = await bcrypt.compare(password,admin.password)
 if(!isValidPass){
     res.status(400).json({message:"invalid credential"})
 }
-const token = jwt.sign({id:admin._id},process.env.SECRET)
+const token = jwt.sign({id:admin._id,role:admin.role},process.env.SECRET)
 res.cookie("token",token)
 res.json({message:"success"})
 }
 export const CreateDoctor= async (req,res)=>{
     try{
 
-        const {name,email,password,about,phone,fees,qualification,title,image}=req.body
+        const {name,email,password,about,phone,fees,qualification,title,image,specialization}=req.body
         const isExist =await  Doctor.findOne({email})
         if(isExist){
-        res.status(400).json({message:"already exist"})
+       return res.status(400).json({message:"already exist"})
     }
     const pass= await bcrypt.hash(password,10)
     const createdDoctor = await Doctor.create({
-        name,email,password:pass,about,phone,fees,qualification,title,image
+        name,email,password:pass,about,phone,fees,qualification,title,image,specialization
     })
     res.json({message:"user created"})
 }
 catch(err){
-    console.log(err)
+   
     res.status(400).json({message:"error",err})
 }
 }
@@ -50,7 +50,7 @@ export const deleteDoctor = async(req,res)=>{
     try{
 
         const {id}= req.params
-        const res = await Doctor.findByIdAndDelete(id)
+        const response = await Doctor.findByIdAndDelete(id)
         res.status(200).json({message:"deleted"})
     }
     catch(err){
