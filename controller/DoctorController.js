@@ -15,7 +15,12 @@ export const DocLogin = async (req,res)=>{
             return res.status(400).json({message:"invalid credentials"})
         }
         const token = jwt.sign({id:isExist._id,role:isExist.role},process.env.SECRET)
-        res.cookie("token",token)
+       res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "None",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
         return res.status(200).json({message:"login"})
     }
     catch(err){

@@ -13,7 +13,12 @@ if(!isValidPass){
     res.status(400).json({message:"invalid credential"})
 }
 const token = jwt.sign({id:admin._id,role:admin.role},process.env.SECRET)
-res.cookie("token",token)
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "None",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
 res.json({message:"success"})
 }
 export const CreateDoctor= async (req,res)=>{
